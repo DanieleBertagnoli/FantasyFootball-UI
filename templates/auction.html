@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fanta-Asta Tool</title>
+
+        <!-- Link to the CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='CSS/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+
+        <!-- jQuery and Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Link to the script -->
+        <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+
+    </head>
+
+    <body>
+        
+        <div class="background" style="flex-direction: column;">
+        
+            <div style="display: flex;">
+
+                <div class="partecipants-container">
+
+                    {% for p in partecipants %}
+
+                        <label id="{{ p.name }}" onclick='showList("{{ loop.index }}")'>{{p.name}}: {{p.credits}}</label>
+
+                        <div id="{{ loop.index }}" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h2>{{ p.name }}</h2>
+        
+                                <h3>Goalkeepers:</h3>
+                                <ul>
+                                    {% for player_dict in p.gk %}
+                                        <li>{{ player_dict.keys()|first }} (Cost: {{ player_dict.values()|first }})</li>
+                                    {% endfor %}
+                                </ul>
+
+                                <h3>Defenders:</h3>
+                                <ul>
+                                    {% for player_dict in p.def %}
+                                        <li>{{ player_dict.keys()|first }} (Cost: {{ player_dict.values()|first }})</li>
+                                    {% endfor %}
+                                </ul>
+
+                                <h3>Midfielders:</h3>
+                                <ul>
+                                    {% for player_dict in p.mid %}
+                                        <li>{{ player_dict.keys()|first }} (Cost: {{ player_dict.values()|first }})</li>
+                                    {% endfor %}
+                                </ul>
+
+                                <h3>Attackers:</h3>
+                                <ul>
+                                    {% for player_dict in p.att %}
+                                        <li>{{ player_dict.keys()|first }} (Cost: {{ player_dict.values()|first }})</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+
+                    {% endfor %}
+
+                </div>
+            
+                <!-- Form -->
+                <form action="/manage-auction" method="post" class="form-container">
+
+                    <h1>Insert player</h1>
+                    
+                    <div class="mb-3">
+
+                        <label for="dropdown">Select a partecipant:</label>
+                        <select id="dropdown" name="partecipant">
+                            {% for p in partecipants %}
+                            <option value="{{ p.name }}">{{ p.name }}</option>
+                            {% endfor %}
+                        </select>
+                    
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="new-player">Player:</label>
+                        <input type="text" name="new-player" id="new-player">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="cost">Cost:</label>
+                        <input type="number" name="cost" id="cost">
+
+                    </div>
+
+                    <input type="submit" class="btn btn-primary" value="Add player">
+
+                </form>
+
+            </div>
+
+            <div class="auction-list">
+
+                <h1>Auction Events</h1>
+
+                <div class="events">
+                    {% for e in events %}
+
+                        <form action="/edit-event" id="event-form-{{ loop.index }}" class="edit-form" method="post" hidden>
+
+                            <input type="hidden" name="old-player" value="{{ e.player }}">
+                            <input type="hidden" name="old-cost" value="{{ e.cost }}">
+                            <input type="hidden" name="old-partecipant" value="{{ e.partecipant }}">
+
+                            <input type="text" name="new-player" id="new-player" placeholder="{{ e.player }}">
+
+                            <label>sold for</label>
+
+                            <input type="number" name="new-cost" id="cost" placeholder="{{ e.cost }}">
+
+                            <label>credits to</label>
+                        
+                            <select id="dropdown" name="new-partecipant">
+                                {% for p in partecipants %}
+                                <option value="{{ p.name }}" {% if p.name == e.partecipant %}selected{% endif %}>{{ p.name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <img src="{{ url_for('static', filename='Images/confirm.png') }}" class="confirm-btn" onclick='submit()'>
+                            <img src="{{ url_for('static', filename='Images/cancel.png') }}" class="cancel-btn" onclick='cancelEdit("{{ loop.index }}")'>
+
+                        </form>
+
+                        <div id="event-{{ loop.index }}" class="single-event">
+                            <label>{{e.player}} sold for {{e.cost}} credits to {{e.partecipant}}</label>
+                            <img src="{{ url_for('static', filename='Images/edit.png') }}" class="edit-btn" onclick='editEvent("{{ loop.index }}")'>
+                        </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </body>
+
+</html>

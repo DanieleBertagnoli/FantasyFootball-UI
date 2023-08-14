@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fanta-Asta Tool</title>
+
+        <!-- Link to the CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='CSS/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+
+        <!-- jQuery and Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Link to the script -->
+        <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+
+    </head>
+
+    <body>
+        
+        <div class="background">
+            
+            <!-- Form -->
+            <form action="/manage-auction" method="post" class="form-container">
+
+                <h1>Auction Settings</h1>
+                
+                <div class="m-2">                
+                    <label for="partecipants">Partecipants:</label>
+                    <input type="number" name="partecipants" id="partecipants" placeholder="Number of partecipants">
+                </div>
+
+                <div class="m-2">
+                    <label for="credits">Starting credits:</label>
+                    <input type="number" name="credits" id="credits" placeholder="Initial credits">
+                </div>
+
+                <div class="separator"></div>
+
+                <div class="m-2">
+                    <label for="gk">Goalkeepers:</label>
+                    <input type="number" name="gk" id="gk" placeholder="Number of goalkeepers">
+                </div>
+
+                <div class="m-2">
+                    <label for="def">Defenders:</label>
+                    <input type="number" name="def" id="def" placeholder="Number of defenders">
+                </div>
+
+                <div class="m-2">
+                    <label for="mid">Midfielders:</label>
+                    <input type="number" name="mid" id="mid" placeholder="Number of midfielders">
+                </div>
+
+                <div class="m-2">
+                    <label for="att">Attackers:</label>
+                    <input type="number" name="att" id="att" placeholder="Number of attackers">
+                </div>
+
+                    <input type="submit" class="btn btn-primary" value="Start auction">
+                
+                </div>
+
+            </form>
+
+        </div>
+
+    </body>
+
+</html>

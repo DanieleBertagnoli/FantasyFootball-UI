@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fanta-Asta Tool</title>
+
+        <!-- Link to the CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='CSS/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+
+        <!-- jQuery and Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Link to the script -->
+        <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
+
+    </head>
+
+    <body>
+        
+        <div class="background">
+            
+            <!-- Form -->
+            <form action="/auction" id="form" method="post" class="form-container" enctype="multipart/form-data">
+
+                <h1>Welcome to the Fanta-Asta Tool</h1>
+                
+                <div class="mb-3">
+                
+                    <input type="file" name="file" id="file" style="display: none;" accept=".txt">
+                    <button class="btn btn-primary" id="select-btn">Resume auction</button>
+
+                    <input type="submit" class="btn btn-primary" value="New auction">
+                
+                </div>
+
+            </form>
+
+        </div>
+
+    </body>
+
+</html>
