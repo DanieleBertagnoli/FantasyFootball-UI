@@ -30,7 +30,22 @@
 
                     {% for p in partecipants %}
 
-                        <label id="{{ p.name }}" onclick='showList("{{ loop.index }}")'>{{p.name}}: {{p.credits}}</label>
+                        <div class="single-partecipant" id="partecipant-{{ loop.index }}">
+                            <label onclick='showList("{{ loop.index }}")'>{{p.name}}: {{p.credits}}</label>
+                            <img src="{{ url_for('static', filename='Images/edit.png') }}" style="margin: 0;" class="edit-btn" onclick='editPartecipant("{{ loop.index }}")'>
+                            <div class="star" id="star-{{ loop.index }}" onclick='selectStar("star-{{ loop.index }}")'>&#9733;</div>
+                        </div>
+
+                        <form action="/edit-partecipant" id="partecipant-{{ loop.index }}-form" class="edit-form-partecipant" method="post" hidden>
+
+                            <input type="hidden" name="old-partecipant" value="{{ p.name }}">
+
+                            <input type="text" name="new-partecipant" id="new-partecipant-edit-{{ loop.index }}" placeholder="{{ p.name }}">
+
+                            <img src="{{ url_for('static', filename='Images/confirm.png') }}" class="confirm-btn" onclick='checkEditPartecipant("{{ loop.index }}")'>
+                            <img src="{{ url_for('static', filename='Images/cancel.png') }}" class="cancel-btn" onclick='cancelEditPartecipant("{{ loop.index }}")'>
+
+                        </form>
 
                         <div id="{{ loop.index }}" class="modal">
                             <div class="modal-content">
@@ -73,7 +88,7 @@
                 </div>
             
                 <!-- Form -->
-                <form action="/manage-auction" method="post" class="form-container">
+                <form action="/manage-auction" method="post" class="form-container" onsubmit="return checkNewPlayer()">
 
                     <h1>Insert player</h1>
                     
@@ -106,6 +121,45 @@
 
                 </form>
 
+
+                {% for p in partecipants %}
+
+                    <div id="star-{{ loop.index }}-list" class="star-list" hidden>
+
+                        <h2>{{ p.name }}</h2>
+        
+                        <h3>Goalkeepers:</h3>
+                        <ul>
+                            {% for player_dict in p.gk %}
+                                <li>{{ player_dict.keys()|first }} (Cost: {{ player_dict.values()|first }})</li>
+                            {% endfor %}
+                        </ul>
+
+                        <h3>Defenders:</h3>
+                        <ul>
+                            {% for player_dict in p.def %}
+                                <li>{{ player_dict.keys()|first }} (Cost: {{ player_dict.values()|first }})</li>
+                            {% endfor %}
+                        </ul>
+
+                        <h3>Midfielders:</h3>
+                        <ul>
+                            {% for player_dict in p.mid %}
+                                <li>{{ player_dict.keys()|first }} (Cost: {{ player_dict.values()|first }})</li>
+                            {% endfor %}
+                        </ul>
+
+                        <h3>Attackers:</h3>
+                        <ul>
+                            {% for player_dict in p.att %}
+                                <li>{{ player_dict.keys()|first }} (Cost: {{ player_dict.values()|first }})</li>
+                            {% endfor %}
+                        </ul>
+
+                    </div>
+
+                {% endfor %}
+
             </div>
 
             <div class="auction-list">
@@ -121,11 +175,11 @@
                             <input type="hidden" name="old-cost" value="{{ e.cost }}">
                             <input type="hidden" name="old-partecipant" value="{{ e.partecipant }}">
 
-                            <input type="text" name="new-player" id="new-player" placeholder="{{ e.player }}">
+                            <input type="text" name="new-player" id="new-player-edit-{{ loop.index }}" placeholder="{{ e.player }}">
 
                             <label>sold for</label>
 
-                            <input type="number" name="new-cost" id="cost" placeholder="{{ e.cost }}">
+                            <input type="number" name="new-cost" id="new-cost-edit-{{ loop.index }}" placeholder="{{ e.cost }}">
 
                             <label>credits to</label>
                         
@@ -135,7 +189,7 @@
                                 {% endfor %}
                             </select>
 
-                            <img src="{{ url_for('static', filename='Images/confirm.png') }}" class="confirm-btn" onclick='submit()'>
+                            <img src="{{ url_for('static', filename='Images/confirm.png') }}" class="confirm-btn" onclick='checkEditEvent("{{ loop.index }}");'>
                             <img src="{{ url_for('static', filename='Images/cancel.png') }}" class="cancel-btn" onclick='cancelEdit("{{ loop.index }}")'>
 
                         </form>
@@ -143,6 +197,10 @@
                         <div id="event-{{ loop.index }}" class="single-event">
                             <label>{{e.player}} sold for {{e.cost}} credits to {{e.partecipant}}</label>
                             <img src="{{ url_for('static', filename='Images/edit.png') }}" class="edit-btn" onclick='editEvent("{{ loop.index }}")'>
+                            <form action="/delete-event" id="delete-event-{{ loop.index }}" method="post">
+                                <img src="{{ url_for('static', filename='Images/delete.png') }}" class="delete-btn" onclick='checkEventDelete("delete-event-{{ loop.index }}")'>
+                                <input type="hidden" name="event" value="{{ e.player }}">
+                            </form>
                         </div>
 
                     {% endfor %}

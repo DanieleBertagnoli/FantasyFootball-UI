@@ -52,7 +52,7 @@ body
 .form-container button:hover
 { background-color: #008867; }
 
-h1
+h1, h2, h3, ul, li
 {
     color: white; 
 }
@@ -90,7 +90,7 @@ select
 {
     display: flex;
     flex-direction: column;
-    width: fit-content;
+    width: 360px;
     height: fit-content;
     -webkit-box-shadow: 0px 0px 56px 23px rgba(0,0,0,0.73);
     -moz-box-shadow: 0px 0px 56px 23px rgba(0,0,0,0.73);
@@ -108,6 +108,31 @@ select
     border-radius: 20px;
     padding: 10px 15px;
     cursor: pointer;
+    width: fit-content;
+}
+
+.single-partecipant
+{
+    display: flex;
+    align-items: center;
+}
+
+.edit-form-partecipant
+{
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 1.5rem;
+}
+
+.edit-form-partecipant input[type="number"], .edit-form-partecipant input[type="text"], .edit-form-partecipant select
+{
+    width: 80%;
+    height: fit-content;
+}
+
+.edit-form-partecipant label, .edit-form-partecipant img
+{
+    margin: 0.5rem;
 }
 
 .auction-list
@@ -135,7 +160,7 @@ select
     overflow-y: auto;
 }
 
-.edit-btn, .cancel-btn, .confirm-btn
+.edit-btn, .cancel-btn, .confirm-btn, .delete-btn
 {
     width: 25px;
     height: 25px;
@@ -207,4 +232,49 @@ select
 .modal-content h2 
 {
     text-align: center;
+}
+
+.modal-content h1, .modal-content h2, .modal-content h3, .modal-content ul, .modal-content li 
+{
+    color: black;
+}
+
+.star 
+{
+    display: inline-block;
+    font-size: 40px;
+    line-height: 1;
+    cursor: pointer;
+    color: white;
+    margin-left: 10px;
+}
+
+.star-list
+{
+    display: flex;
+    flex-direction: column;
+    width: 360px;
+    height: fit-content;
+    -webkit-box-shadow: 0px 0px 56px 23px rgba(0,0,0,0.73);
+    -moz-box-shadow: 0px 0px 56px 23px rgba(0,0,0,0.73);
+    box-shadow: 0px 0px 56px 23px rgba(0,0,0,0.73);
+    background-color: rgba(0,0,0,0.85);
+    border-radius: 20px;
+    margin-right: 2rem;
+    padding: 10px;
+}
+
+.star-list h3
+{
+    margin: 1rem 1.5rem;
+}
+
+.star-list ul
+{
+    margin: 0 1rem;
+}
+
+.star-list h2
+{
+    margin:  1.5rem auto;
 }
