@@ -42,6 +42,10 @@ def auction():
             partecipants = data["partecipants"]
             events = data["events"]
 
+            session['configs'] = configs
+            session['partecipants'] = partecipants
+            session['events'] = events
+
         return render_template("auction.html", partecipants=partecipants, events=events)
     else:
         return render_template("auction-config.html")
