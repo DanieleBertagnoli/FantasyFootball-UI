@@ -14,10 +14,6 @@ app.static_folder = 'static'
 @app.route("/") 
 def index():
 
-    session['configs'] = {}
-    session['partecipants'] = []
-    session['events'] = []
-
     return render_template("index.html") #Redirect to the index page
 
 
@@ -25,26 +21,15 @@ def index():
 @app.route("/auction", methods=['POST'])
 def auction():
 
-    session['configs'] = {}
-    session['partecipants'] = []
-    session['events'] = []
-
-    config_file = request.files["file"] # Save the file auction config name
-    config_file_name = config_file.filename
+    config_file = request.files["file"] # Save the file auction config name 
 
     if config_file: # The user wants to resume an auction
 
+        session['file_name'] = "Uploads/" + config_file.filename
         config_file.save("Uploads/" + config_file.filename) # Save the file into the Uploads folder
 
-        with open("Uploads/" + config_file.filename, 'r') as file: # Read configs and partecipants
-            data = json.load(file) # Retrieve data
-            configs = data["configs"]
-            partecipants = data["partecipants"]
-            events = data["events"]
+        configs, partecipants, events = get_data_from_file("Uploads/" + config_file.filename)
 
-            session['configs'] = configs
-            session['partecipants'] = partecipants
-            session['events'] = events
 
         return render_template("auction.html", partecipants=partecipants, events=events)
     else:
@@ -56,11 +41,9 @@ def auction():
 def manage_auction():
 
     # Retrieve data from session
-    configs = session.get('configs', {})
-    partecipants = session.get('partecipants', [])
-    events = session.get('events', [])
+    file_name = session.get('file_name')
 
-    if len(configs) == 0: # New auction
+    if not file_name: # New auction
 
         formatted_datetime = datetime.datetime.now().strftime("%H-%M-%d-%m-%Y") # Get formatted daytime
 
@@ -84,17 +67,16 @@ def manage_auction():
                 "att": []
                 })
 
-        with open(f"Uploads/{formatted_datetime}-auction.txt", 'w') as file: # Save configs and partecipants in the file
-            data = {"configs": configs, "partecipants": partecipants, "events": events}
-            json.dump(data, file)
+        save_new_data(f"Uploads/{formatted_datetime}-auction.txt", configs, partecipants, events)
 
 
     elif request.form.get("new-player"): # New player sold
+
+        configs, partecipants, events = get_data_from_file(file_name)
+
         new_player_name = request.form.get("new-player").upper() # Get the player name
         new_player_cost = int(request.form.get("cost")) # Get the player cost
         partecipant = request.form.get("partecipant") # Get the partecipant
-
-        print(new_player_name + f" sold for {new_player_cost} to " + partecipant)
 
         for p in partecipants: # Find the partecipant
 
@@ -111,16 +93,11 @@ def manage_auction():
                 p[role].append({new_player_name: new_player_cost}) # Add the player to the partecipant's list
                 events.append({"player": new_player_name, "cost": new_player_cost, "partecipant": p["name"]}) # Add the event
 
-                with open(configs["file"], 'w') as file: # Save configs and partecipants in the file
-                    data = {"configs": configs, "partecipants": partecipants, "events": events}
-                    json.dump(data, file)
+                print(f"{new_player_name} sold for {new_player_cost} to {p['name']}")
+
+                save_new_data(file_name, configs, partecipants, events)
 
                 break
-
-    # After modifying configs, partecipants, or events
-    session['configs'] = configs
-    session['partecipants'] = partecipants
-    session['events'] = events
 
     return render_template("auction.html", partecipants=partecipants, events=events)
 
@@ -129,10 +106,8 @@ def manage_auction():
 @app.route("/edit-event", methods=['POST'])
 def edit_event():
 
-    # Retrieve data from session
-    configs = session.get('configs', {})
-    partecipants = session.get('partecipants', [])
-    events = session.get('events', [])
+    file_name = session.get('file_name')
+    configs, partecipants, events = get_data_from_file(file_name)
 
     new_player_name = request.form.get("new-player").upper() # Get the new player name
     new_player_cost = int(request.form.get("new-cost")) # Get the new player cost
@@ -183,14 +158,7 @@ def edit_event():
             break
 
 
-    with open(configs["file"], 'w') as file: # Save configs and partecipants in the file
-        data = {"configs": configs, "partecipants": partecipants, "events": events}
-        json.dump(data, file)
-
-    # After modifying configs, partecipants, or events
-    session['configs'] = configs
-    session['partecipants'] = partecipants
-    session['events'] = events
+    save_new_data(file_name, configs, partecipants, events)
     
     return render_template("auction.html", partecipants=partecipants, events=events)
 
@@ -199,10 +167,8 @@ def edit_event():
 @app.route("/edit-partecipant", methods=['POST'])
 def edit_partecipant():
 
-    # Retrieve data from session
-    configs = session.get('configs', {})
-    partecipants = session.get('partecipants', [])
-    events = session.get('events', [])
+    file_name = session.get('file_name')
+    configs, partecipants, events = get_data_from_file(file_name)
 
     new_partecipant = request.form.get("new-partecipant") # Get the new partecipant
     old_partecipant = request.form.get("old-partecipant") # Get the old partecipant
@@ -216,14 +182,8 @@ def edit_partecipant():
         if e["partecipant"] == old_partecipant:
             e["partecipant"] = new_partecipant
 
-    with open(configs["file"], 'w') as file: # Save configs and partecipants in the file
-        data = {"configs": configs, "partecipants": partecipants, "events": events}
-        json.dump(data, file)
+    save_new_data(file_name, configs, partecipants, events)
     
-    # After modifying configs, partecipants, or events
-    session['configs'] = configs
-    session['partecipants'] = partecipants
-    session['events'] = events
 
     return render_template("auction.html", partecipants=partecipants, events=events)
 
@@ -232,10 +192,8 @@ def edit_partecipant():
 @app.route("/delete-event", methods=['POST'])
 def delete_event():
 
-    # Retrieve data from session
-    configs = session.get('configs', {})
-    partecipants = session.get('partecipants', [])
-    events = session.get('events', [])
+    file_name = session.get('file_name')
+    configs, partecipants, events = get_data_from_file(file_name)
 
     player = request.form.get("event") # Get the player name
 
@@ -262,17 +220,27 @@ def delete_event():
 
             break
     
-    with open(configs["file"], 'w') as file: # Save configs and partecipants in the file
-        data = {"configs": configs, "partecipants": partecipants, "events": events}
-        json.dump(data, file)
+    save_new_data(file_name, configs, partecipants, events)
 
-    # After modifying configs, partecipants, or events
-    session['configs'] = configs
-    session['partecipants'] = partecipants
-    session['events'] = events
     
     return render_template("auction.html", partecipants=partecipants, events=events)
 
+
+def get_data_from_file(file_name):
+
+    with open(file_name, 'r') as file: # Read configs and partecipants
+            data = json.load(file) # Retrieve data
+            configs = data["configs"]
+            partecipants = data["partecipants"]
+            events = data["events"]
+
+    return configs, partecipants, events
+
+def save_new_data(file_name, configs, partecipants, events):
+
+    with open(file_name, 'w') as file: # Save configs and partecipants in the file
+        data = {"configs": configs, "partecipants": partecipants, "events": events}
+        json.dump(data, file)
 
 if __name__ == "__main__": # Run the app
   app.run()
