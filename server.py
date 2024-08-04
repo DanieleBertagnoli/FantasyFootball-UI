@@ -1,5 +1,6 @@
 import json
 import datetime
+import os
 
 from flask import Flask, render_template, request, render_template_string, url_for, session
 
@@ -14,6 +15,8 @@ app.static_folder = 'static'
 @app.route("/") 
 def index():
 
+    if not os.path.exists('Uploads'):
+        os.mkdir('Uploads')
     return render_template("index.html") #Redirect to the index page
 
 
@@ -56,6 +59,10 @@ def manage_auction():
             "att": int(request.form.get('att')),
             "file": f"Uploads/{formatted_datetime}-auction.txt"
         } # Save configs
+
+        session['file_name'] = f"Uploads/{formatted_datetime}-auction.txt"
+        partecipants = []
+        events = []
 
         for i in range(0, configs["partecipants"]): # Initialize the partecipants dict
             partecipants.append({

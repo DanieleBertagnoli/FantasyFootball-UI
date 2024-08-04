@@ -67,7 +67,7 @@ label
 
 input[type="number"], input[type="text"]
 {
-    border-radius: 20px;
+    border-radius: 10px;
     appearance: textfield;
     padding-left: 10px;
     padding-top: 5px;
