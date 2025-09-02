@@ -4,13 +4,13 @@ This tool can be used to manage the bids for the famous Italian game "Fantacalci
 ## Installation 🚀
 The tool requires a Python3 virtual environment to work (you can also choose to install Flask on your PC). First of all, clone the repository:
 
-```
-git clone https://github.com/DanieleBertagnoli/FantaAstaTool
+```sh
+git clone https://github.com/DanieleBertagnoli/FantasyFootballBidManager
 ```
 
 After that run the installation script:
 
-```
+```sh
 sudo chmod +x install.sh
 ./install.sh
 ```
@@ -22,9 +22,7 @@ The final file will be saved and stored in the "Uploads" folder, located in the 
 
 To run the web interface, simply use the following commands:
 
-
-
-```
+```sh
 sudo chmod +x run.sh
 ./run.sh
 ```
