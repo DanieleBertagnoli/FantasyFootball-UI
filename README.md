@@ -1,4 +1,4 @@
-# FantaAstaTool ⚽
+# FantasyFootballBidManager ⚽
 This tool can be used to manage the bids for the famous Italian game "Fantacalcio," also known as "Fantasy Football." It's a simple yet useful web interface that helps you keep track of all participants' credits and events during the bidding process.
 
 ## Installation 🚀
